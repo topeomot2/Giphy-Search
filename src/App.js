@@ -5,12 +5,34 @@ import SearchBox from './components/SearchBox';
 import Results from './components/Results';
 import './App.css';
 
+
+
   class App extends Component {
+
+    processPhotos() {
+      if(this.props.photos.length === 0)return[];
+
+      
+      let photos = this.props.photos.map((photo) => {
+        let share_url = photo.bitly_url;
+        let { url, width, height }= photo.images.downsized;
+        return {
+          src: url,
+          width: parseInt(width),
+          height: parseInt(height),
+          share_url 
+        }
+      });
+
+      return photos;
+    }
+
+
     render() {
       return (
         <div className="App">
-        <SearchBox />
-        <Results />
+        <SearchBox {...this.props}/>
+        <Results photos={this.processPhotos()} pending={this.props.pending}/>
       </div>
       )
     }
@@ -18,7 +40,7 @@ import './App.css';
 
 const mapDispatchToProps = dispatch => {
   return {
-    searchApi: () => dispatch(searchApi())
+    searchApi: (value) => dispatch(searchApi(value))
   }
 }
 
